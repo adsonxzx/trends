@@ -8,10 +8,10 @@ from maps import draw_state, draw_name, draw_dot, wait, message
 from string import ascii_letters
 from ucb import main, trace, interact, log_current_line
 
-
 # Phase 1: The Feelings in Tweets
 
-def make_tweet(text, time, lat, lon):
+def make_tweet(text, time, lat, lon):##
+    #done
     """Return a tweet, represented as a python dictionary.
 
     text      -- A string; the text of the tweet, all in lowercase
@@ -28,36 +28,29 @@ def make_tweet(text, time, lat, lon):
     >>> latitude(p)
     38
     """
-    #--------
-    tweet = {}
-    tweet['text'] = text.lower()
-    tweet['time'] = time
-    tweet['text'] = lat
-    tweet['text'] = lon
-    
     return {'text': text, 'time': time, 'latitude': lat, 'longitude': lon}
 
-def tweet_words(tweet):
+def tweet_words(tweet):##
     """Return a list of the words in the text of a tweet."""
-    #--------
-    return tweet['text'].split()
+    #done
+    return extract_words(tweet["text"])
 
-def tweet_time(tweet):
+    
+def tweet_time(tweet):##
     """Return the datetime that represents when the tweet was posted."""
-    #--------
-    data = datetime(int(tweet['time'][0]),int(tweet['time'][1]),int(tweet['time'][2]),int(tweet['time'][3]))
-    return data
+    #done
+    return tweet["time"]
 
-def tweet_location(tweet):
+def tweet_location(tweet):##
+    #done
     """Return a position (see geo.py) that represents the tweet's location."""
-    #--------
-    return tweet['latitude'], tweet['longitude']
+    return tweet["latitude"], tweet["longitude"]
 
 def tweet_string(tweet):
     """Return a string representing the tweet."""
     return '"{0}" @ {1}'.format(tweet['text'], tweet_location(tweet))
 
-def extract_words(text):
+def extract_words(text):##
     """Return the words in a tweet, not including punctuation.
 
     >>> extract_words('anything else.....not my job')
@@ -69,8 +62,20 @@ def extract_words(text):
     >>> extract_words("paperclips! they're so awesome, cool, & useful!")
     ['paperclips', 'they', 're', 'so', 'awesome', 'cool', 'useful']
     """
-    "*** YOUR CODE HERE ***"
-    return text.split()  # Replace
+    #done
+    temp_string = ""
+    words_list = []
+    for caractere in text:
+        if caractere in ascii_letters:
+            temp_string = temp_string + caractere
+        else:
+            if temp_string != "":
+                words_list.append(temp_string)
+            temp_string = ""
+    if temp_string != "":
+        words_list.append(temp_string)
+    return words_list
+
 
 def make_sentiment(value):
     """Return a sentiment, which represents a value that may not exist.
@@ -369,4 +374,6 @@ def run(*args):
     for name, execute in args.__dict__.items():
         if name != 'text' and execute:
             globals()[name](' '.join(args.text))
+
+
 
