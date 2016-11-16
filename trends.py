@@ -8,10 +8,14 @@ from maps import draw_state, draw_name, draw_dot, wait, message
 from string import ascii_letters
 from ucb import main, trace, interact, log_current_line
 
+#--------------------------------------------------
+#LEGENDA:  #### = feito e testado
+          #---- = comeco e fim do NOSSO codigo (para separar do codigo que ja existia)
+#--------------------------------------------------
+
 # Phase 1: The Feelings in Tweets
 
-def make_tweet(text, time, lat, lon):##
-    #done
+def make_tweet(text, time, lat, lon):####
     """Return a tweet, represented as a python dictionary.
 
     text      -- A string; the text of the tweet, all in lowercase
@@ -29,28 +33,34 @@ def make_tweet(text, time, lat, lon):##
     38
     """
     return {'text': text, 'time': time, 'latitude': lat, 'longitude': lon}
+    #cria um dicionario a partir da string de um tweet
 
-def tweet_words(tweet):##
+def tweet_words(tweet):####
     """Return a list of the words in the text of a tweet."""
-    #done
+    #----
     return extract_words(tweet["text"])
-
-    
-def tweet_time(tweet):##
+    #----
+    #retornar do dicionario de make_tweet o texto filtrado por extract_words
+   
+def tweet_time(tweet):####
     """Return the datetime that represents when the tweet was posted."""
-    #done
+    #----
     return tweet["time"]
+    #retornar do dicionario de make_tweet o tempo
 
-def tweet_location(tweet):##
-    #done
+def tweet_location(tweet):####
     """Return a position (see geo.py) that represents the tweet's location."""
+    #----
     return tweet["latitude"], tweet["longitude"]
+    #----
+    #retornar do dicionario de make_tweet a latitude e a longitude
 
 def tweet_string(tweet):
     """Return a string representing the tweet."""
     return '"{0}" @ {1}'.format(tweet['text'], tweet_location(tweet))
+    #tranformar o tweet em uma string
 
-def extract_words(text):##
+def extract_words(text):####
     """Return the words in a tweet, not including punctuation.
 
     >>> extract_words('anything else.....not my job')
@@ -62,7 +72,7 @@ def extract_words(text):##
     >>> extract_words("paperclips! they're so awesome, cool, & useful!")
     ['paperclips', 'they', 're', 'so', 'awesome', 'cool', 'useful']
     """
-    #done
+    #----
     temp_string = ""
     words_list = []
     for caractere in text:
@@ -75,9 +85,10 @@ def extract_words(text):##
     if temp_string != "":
         words_list.append(temp_string)
     return words_list
+    #----
+    #metodo split criado para extrair somente caracteres validos e transformar em palavras numa lista
 
-
-def make_sentiment(value):
+def make_sentiment(value):####
     """Return a sentiment, which represents a value that may not exist.
 
     >>> s = make_sentiment(0.2)
@@ -90,16 +101,28 @@ def make_sentiment(value):
     0.2
     """
     assert value is None or (value >= -1 and value <= 1), 'Illegal value'
-    "*** YOUR CODE HERE ***"
+    #----
+    return value
+    #----
+    #cria um sentimento e atribui um valor
 
-def has_sentiment(s):
+def has_sentiment(s):####
     """Return whether sentiment s has a value."""
-    "*** YOUR CODE HERE ***"
-
-def sentiment_value(s):
+    #----
+    if s != None:
+        return True
+    else:
+        return False
+    #----
+    #checa se existe sentimento na palavra ou nao
+    
+def sentiment_value(s):####
     """Return the value of a sentiment s."""
     assert has_sentiment(s), 'No sentiment value'
-    "*** YOUR CODE HERE ***"
+    #----
+    return s
+    #----
+    #checa no arquivo de data o valor do sentimento, se existir
 
 def get_word_sentiment(word):
     """Return a sentiment representing the degree of positive or negative
@@ -115,8 +138,9 @@ def get_word_sentiment(word):
     False
     """
     return make_sentiment(word_sentiments.get(word, None))
+    #checa no arquivo de data o valor do sentimento, se n existir retorna False
 
-def analyze_tweet_sentiment(tweet):
+def analyze_tweet_sentiment(tweet):####
     """ Return a sentiment representing the degree of positive or negative
     sentiment in the given tweet, averaging over all the words in the tweet
     that have a sentiment value.
@@ -135,13 +159,25 @@ def analyze_tweet_sentiment(tweet):
     False
     """
     average = make_sentiment(None)
-    "*** YOUR CODE HERE ***"
+    #----
+    average = 0
+    index = 0
+    for word in extract_words(tweet["text"]):
+        value = get_word_sentiment(word)
+        if has_sentiment(value) != False:
+            average += value
+            index += 1
+    if average != 0:
+        average = average / index
+    else:
+        average = make_sentiment(None)
+    #----
     return average
-
+    #analisa todo um tweet e tira uma media dos sentimentos
 
 # Phase 2: The Geometry of Maps
 
-def find_centroid(polygon):
+def find_centroid(polygon):####
     """Find the centroid of a polygon.
 
     http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
@@ -161,9 +197,34 @@ def find_centroid(polygon):
     >>> find_centroid([p1, p2, p1])
     (1, 2, 0)
     """
-    "*** YOUR CODE HERE ***"
+    #----
+    cx = 0; cy = 0; area = 0
+    
+    for i in range(0,(len(polygon)-1),1): #somatorio area
+        xi = (polygon[i])[0]; yi = (polygon[i])[1]
+        x2 = (polygon[i+1])[0]; y2 = (polygon[i+1])[1]
+        area = area + ((xi*y2) - (x2*yi))
+    area = area * (1/2)
+    
+    if area == 0: area = 0; cx = (polygon[0])[0]; cy = (polygon[0])[1]
+    else:
+        for i in range(0,(len(polygon)-1),1):
+            xi = (polygon[i])[0]; yi = (polygon[i])[1]
+            x2 = (polygon[i+1])[0]; y2 = (polygon[i+1])[1]
+            cx = cx + ((xi + x2) * ((xi * y2) - (x2*yi)))
+        cx = cx * 1/(6*area)
+        
+        for i in range(0,(len(polygon)-1),1):
+            xi = (polygon[i])[0]; yi = (polygon[i])[1]
+            x2 = (polygon[i+1])[0]; y2 = (polygon[i+1])[1]
+            cy = cy + ((yi + y2) * ((xi * y2) - (x2*yi)))
+        cy = cy * 1/(6*area)
+        area = abs(area)
+        
+    return cx, cy, area
+    #----
 
-def find_center(polygons):
+def find_center(polygons):####
     """Compute the geographic center of a state, averaged over its polygons.
 
     The center is the average position of centroids of the polygons in polygons,
@@ -184,12 +245,19 @@ def find_center(polygons):
     >>> round(longitude(hi), 5)
     -156.21763
     """
-    "*** YOUR CODE HERE ***"
-
+    #----
+    cx = 0; cy = 0; areai = 0
+    for polygon in polygons:#somatorios do centroid e da area de todos os poligonos
+        cx = cx + (find_centroid(polygon)[0]) * (find_centroid(polygon)[2])
+        cy = cy + (find_centroid(polygon)[1]) * (find_centroid(polygon)[2])
+        areai = areai + (find_centroid(polygon)[2])
+    cx = cx/areai; cy = cy/areai
+    return cx, cy
+    #----
 
 # Phase 3: The Mood of the Nation
 
-def find_closest_state(tweet, state_centers):
+def find_closest_state(tweet, state_centers):#### problema 8
     """Return the name of the state closest to the given tweet's location.
 
     Use the geo_distance function (already provided) to calculate distance
@@ -207,9 +275,20 @@ def find_closest_state(tweet, state_centers):
     >>> find_closest_state(ny, us_centers)
     'NJ'
     """
-    "*** YOUR CODE HERE ***"
-
-def group_tweets_by_state(tweets):
+    #----    
+    distancias = []
+    for x in state_centers:        
+        dist = geo_distance(make_position(tweet["latitude"],tweet["longitude"]), make_position(state_centers[x][0],state_centers[x][1]))
+        distancias.append(dist)
+    for x in state_centers:
+        if geo_distance(make_position(tweet["latitude"],tweet["longitude"]), make_position(state_centers[x][0],state_centers[x][1])) == min(distancias):
+            estado = x
+    
+    return estado
+    #----
+    # Calcula a distancia do tweet dado e retorna a sigla do estado mais proximo.
+    
+def group_tweets_by_state(tweets):### problema 9
     """Return a dictionary that aggregates tweets by their nearest state center.
 
     The keys of the returned dictionary are state names, and the values are
@@ -223,11 +302,25 @@ def group_tweets_by_state(tweets):
     >>> tweet_string(ca_tweets[0])
     '"Welcome to San Francisco" @ (38, -122)'
     """
+    #----    
     tweets_by_state = {}
-    "*** YOUR CODE HERE ***"
-    return tweets_by_state
 
-def most_talkative_state(term):
+    for x in tweets:
+        estado = find_closest_state(x, us_centers)        
+        tweets_by_state[estado] = []
+        
+    for x in tweets_by_state.keys():
+        for y in tweets:
+            estado = find_closest_state(y, us_centers)   
+            if estado == x:
+                tweets_by_state[estado].append(y)
+    
+                       
+    return tweets_by_state
+    #----
+    #retorna um dicionario com a sigla do estado como chave e os tweets mais proximo desse estado como valor.
+
+def most_talkative_state(term):# problema 10
     """Return the state that has the largest number of tweets containing term.
 
     >>> most_talkative_state('texas')
@@ -236,7 +329,10 @@ def most_talkative_state(term):
     'NJ'
     """
     tweets = load_tweets(make_tweet, term)  # A list of tweets containing term
-    "*** YOUR CODE HERE ***"
+    #----
+    
+    #----
+    return tweets
 
 def average_sentiments(tweets_by_state):
     """Calculate the average sentiment of the states by averaging over all
@@ -374,6 +470,3 @@ def run(*args):
     for name, execute in args.__dict__.items():
         if name != 'text' and execute:
             globals()[name](' '.join(args.text))
-
-
-
