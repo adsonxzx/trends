@@ -295,7 +295,7 @@ def group_tweets_by_state(tweets):
     """
        
     tweets_by_state = {}
-
+    us_centers = {n: find_center(s) for n, s in us_states.items()}
     for x in tweets:
         estado = find_closest_state(x, us_centers)        
         tweets_by_state[estado] = []    
@@ -319,7 +319,7 @@ def most_talkative_state(term):
     """
     tweets = load_tweets(make_tweet, term)  # A list of tweets containing term
     estados = {}
-    #----
+    us_centers = {n: find_center(s) for n, s in us_states.items()}
     for tw in tweets:
         estado = find_closest_state(tw, us_centers)        
         if estado not in estados:
