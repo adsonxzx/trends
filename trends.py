@@ -356,15 +356,16 @@ def average_sentiments(tweets_by_state):
     averaged_state_sentiments = {}
     
        
-    for tw in tweets_by_state.keys():        
+    for tw in tweets_by_state:        
         sentimentos = 0
         count = 0
         for valor in tweets_by_state[tw]:           
            sent = analyze_tweet_sentiment(valor)
-           if sent != None or sent != 0:
+           if sent != None:
                sentimentos += sent
                count += 1
-        averaged_state_sentiments[tw] = (sentimentos / count)    
+        if count != 0:    
+            averaged_state_sentiments[tw] = (sentimentos / count)    
     return averaged_state_sentiments
 
     # retorna a media de sentimentos de vários tweets em relação a um estado
