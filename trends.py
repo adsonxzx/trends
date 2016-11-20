@@ -9,7 +9,6 @@ from string import ascii_letters
 from ucb import main, trace, interact, log_current_line
 
 
-
 # Phase 1: The Feelings in Tweets
 
 def make_tweet(text, time, lat, lon):
@@ -30,7 +29,7 @@ def make_tweet(text, time, lat, lon):
     38
     """
     return {'text': text, 'time': time, 'latitude': lat, 'longitude': lon}
-    #cria um dicionario a partir da string de um tweet
+    #cria um dicionario a partir dos dados de um tweet
 
 def tweet_words(tweet):
     """Return a list of the words in the text of a tweet."""
@@ -42,13 +41,13 @@ def tweet_time(tweet):
     """Return the datetime that represents when the tweet was posted."""
     
     return tweet["time"]
-    #retornar do dicionario de make_tweet o tempo
+    #retornar do dicionario de make_tweet a data do tweet
 
 def tweet_location(tweet):
     """Return a position (see geo.py) that represents the tweet's location."""
     
     return tweet["latitude"], tweet["longitude"]    
-    #retornar do dicionario de make_tweet a latitude e a longitude
+    #retornar do dicionario de make_tweet a latitude e a longitude do tweet
 
 def tweet_string(tweet):
     """Return a string representing the tweet."""
@@ -80,7 +79,7 @@ def extract_words(text):
     if temp_string != "":
         words_list.append(temp_string)
     return words_list    
-    #metodo split criado para extrair somente caracteres validos e transformar em palavras numa lista
+    #metodo split criado para extrair somente caracteres validos ascii_letters e transformar em strings numa lista
 
 def make_sentiment(value):
     """Return a sentiment, which represents a value that may not exist.
@@ -148,16 +147,16 @@ def analyze_tweet_sentiment(tweet):
     >>> has_sentiment(analyze_tweet_sentiment(no_sentiment))
     False
     """   
-    average_of_sentiments = 0
+    sentiments_average = 0
     sentiments_count = 0
     for word in tweet_words(tweet):
         value = get_word_sentiment(word)
         if has_sentiment(value) != False:
-            average_of_sentiments += value
+            sentiments_average += sentiment_value(value)
             sentiments_count += 1
     if sentiments_count == 0:
         return make_sentiment(None)  
-    return (average_of_sentiments / sentiments_count)
+    return (sentiments_average / sentiments_count)
     #analisa todo as palavras de um tweet e tira uma media dos sentimentos
 
 # Phase 2: The Geometry of Maps
