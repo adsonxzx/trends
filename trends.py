@@ -136,10 +136,8 @@ def analyze_tweet_sentiment(tweet):
     """ Return a sentiment representing the degree of positive or negative
     sentiment in the given tweet, averaging over all the words in the tweet
     that have a sentiment value.
-
     If no words in the tweet have a sentiment value, return
     make_sentiment(None).
-
     >>> positive = make_tweet('i love my job. #winning', None, 0, 0)
     >>> round(sentiment_value(analyze_tweet_sentiment(positive)), 5)
     0.29167
@@ -149,23 +147,18 @@ def analyze_tweet_sentiment(tweet):
     >>> no_sentiment = make_tweet("Go bears!", None, 0, 0)
     >>> has_sentiment(analyze_tweet_sentiment(no_sentiment))
     False
-    """
-    average = make_sentiment(None)
-    
-    average = 0
-    index = 0
-    for word in extract_words(tweet["text"]):
+    """   
+    average_of_sentiments = 0
+    sentiments_count = 0
+    for word in tweet_words(tweet):
         value = get_word_sentiment(word)
         if has_sentiment(value) != False:
-            average += value
-            index += 1
-    if average != 0:
-        average = average / index
-    else:
-        average = make_sentiment(None)
-    
-    return average
-    #analisa todo um tweet e tira uma media dos sentimentos
+            average_of_sentiments += value
+            sentiments_count += 1
+    if sentiments_count == 0:
+        return make_sentiment(None)  
+    return (average_of_sentiments / sentiments_count)
+    #analisa todo as palavras de um tweet e tira uma media dos sentimentos
 
 # Phase 2: The Geometry of Maps
 
