@@ -289,16 +289,14 @@ def group_tweets_by_state(tweets):
     tweets_by_state = {}
     us_centers = {n: find_center(s) for n, s in us_states.items()}
     for x in tweets:
-        estado = find_closest_state(x, us_centers)        
-        tweets_by_state[estado] = []    
-    for x in tweets_by_state.keys():
-        for y in tweets:
-            estado = find_closest_state(y, us_centers)   
-            if estado == x:
-                tweets_by_state[estado].append(y)
-    
-                       
-    return tweets_by_state    
+        estado = find_closest_state(x, us_centers)       
+        if not(estado) in tweets_by_state:
+            tweets_by_state[estado] = []
+            tweets_by_state[estado] += [x]
+        else:
+            tweets_by_state[estado] += [x]
+            
+    return tweets_by_state  
     #retorna um dicionario com a sigla do estado como chave e os tweets mais proximo desse estado como valor.
 
 def most_talkative_state(term):
